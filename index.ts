@@ -1,12 +1,16 @@
 import * as http from 'http'
+import * as querystring from 'querystring'
+import { URLSearchParams } from 'url';
 import { add } from "./a";
 
 const sum: number = add(10,20)
 console.log(sum)
 
 const server = http.createServer((req, res) =>{
-  res.writeHead(200, {'content-type': 'text/html'})
-  res.end('<h1>hello world</h1>')
+  const url = req.url
+  console.log('url :>> ', url);
+  const query = new URLSearchParams(url.split('?')[1])
+  res.end(query.toString())
 })
 
 server.listen(3000, ()=>{

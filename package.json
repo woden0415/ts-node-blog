@@ -5,13 +5,15 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx ts-node index.ts"
+    "dev": "nodemon --ext js,ts --exec 'npx ts-node bin/www.ts Node_ENV=dev'",
+    "prod": "nodemon --ext js,ts --exec 'npx ts-node bin/www.ts Node_ENV=prod'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.9.6",
+    "nodemon": "^2.0.13",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
     "typescript": "^4.4.3"

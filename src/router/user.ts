@@ -1,10 +1,11 @@
 import { ServerResponse } from "http";
+import { SuccessModel } from "../model/resModel";
 import { CustomIncomingMessage } from "../types";
 
-const handleUserRouter = (req: CustomIncomingMessage, res: ServerResponse) => {
+const handleUserRouter = async (req: CustomIncomingMessage, res: ServerResponse): Promise<any> => {
   // 登录
   if (req.isPost && req.path === '/api/user/login') {
-    return '登录'
+    return new SuccessModel(req.body)
   }
 }
 

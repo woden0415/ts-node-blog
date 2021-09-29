@@ -26,22 +26,18 @@ const handleBlogRouter = (req: CustomIncomingMessage, res: ServerResponse) => {
   // 播客新增
   if (req.isPost && req.path === '/api/blog/new') {
     return {
-      msg: '播客新增'
+      msg: JSON.stringify(req.body) || ''
     }
   }
 
   // 播客更新
   if (req.isPost && req.path === '/api/blog/update') {
-    return {
-      msg: '播客更新'
-    }
+    return new SuccessModel(req.body)
   }
 
   // 播客删除
   if (req.isPost && req.path === '/api/blog/del') {
-    return {
-      msg: '播客删除'
-    }
+    return new SuccessModel(req.body)
   }
 
 }

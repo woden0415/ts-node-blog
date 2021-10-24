@@ -1,43 +1,52 @@
 import { ServerResponse } from 'http';
-import { SuccessModel } from '../model/resModel';
+import { ErrorModel, SuccessModel } from '../model/resModel';
 import { CustomIncomingMessage } from '../types';
-import { getBlogList } from './../controller.ts/blog';
+import { getBlogList, getBolgDetail, newBlog, updateBlog, delBlog } from './../controller.ts/blog';
 
 
-const handleBlogRouter = (req: CustomIncomingMessage, res: ServerResponse) => {
+const handleBlogRouter = async (req: CustomIncomingMessage, res: ServerResponse) => {
 
   // 播客列表接口
   if (req.isGet && req.path === '/api/blog/list') {
     const author = req.query.author;
     const keyword = req.query.keyword;
     const listData = getBlogList(author, keyword)
-
-    // return getBlogList()
     return new SuccessModel(listData);
   }
 
   // 播客详情接口
   if (req.isGet && req.path === '/api/blog/detail') {
-    return {
-      msg: '播客详情接口'
-    }
+    const id = req.query.id;
+    const data = await getBolgDetail(id);
+    return new SuccessModel(data)
   }
 
   // 播客新增
   if (req.isPost && req.path === '/api/blog/new') {
-    return {
-      msg: JSON.stringify(req.body) || ''
-    }
+    const data = await newBlog(req.body);
+    return new SuccessModel(data)
   }
 
   // 播客更新
   if (req.isPost && req.path === '/api/blog/update') {
-    return new SuccessModel(req.body)
+    const id = req.query.id;
+    const blogData = req.body;
+    const data = await updateBlog(id, blogData);
+    if (data) {
+      return new SuccessModel(data)
+    }
+    return new ErrorModel('更新播客失败')
   }
 
   // 播客删除
   if (req.isPost && req.path === '/api/blog/del') {
-    return new SuccessModel(req.body)
+    // return new SuccessModel(req.body)
+    const id = req.query.id;
+    const data = await delBlog(id);
+    if (data) {
+      return new SuccessModel('删除成功' + id)
+    }
+    return new ErrorModel('删除失败')
   }
 
 }

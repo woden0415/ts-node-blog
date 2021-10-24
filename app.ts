@@ -43,7 +43,7 @@ const serverHandle = async (req: CustomIncomingMessage, res: ServerResponse) => 
     const postData = await getPostData(req)
     req.body = postData
     // 处理blog路由
-    const blogData = handleBlogRouter(req, res)
+    const blogData = await handleBlogRouter(req, res)
     if (blogData) {
       res.end(JSON.stringify(blogData))
       return

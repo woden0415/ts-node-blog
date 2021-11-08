@@ -10,8 +10,13 @@ const handleBlogRouter = async (req: CustomIncomingMessage, res: ServerResponse)
   if (req.isGet && req.path === '/api/blog/list') {
     const author = req.query.author;
     const keyword = req.query.keyword;
-    const listData = getBlogList(author, keyword)
-    return new SuccessModel(listData);
+    try {
+      const listData = await getBlogList(author, keyword)
+      return new SuccessModel(listData);
+    } catch (error) {
+      return new ErrorModel(error)
+    }
+
   }
 
   // 播客详情接口

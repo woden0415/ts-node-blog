@@ -1,3 +1,4 @@
+import exec from '../db/mysql';
 import { blog } from './../types/blog';
 
 /**
@@ -6,26 +7,19 @@ import { blog } from './../types/blog';
  * @param keyword 
  * @returns 
  */
-export const getBlogList = (author: string, keyword: string): Array<blog> => {
-  return [
-    {
-      id: 1,
-      title: '标题1',
-      content: '内容1',
-      createTime: new Date().getTime(),
-      author: author + '1',
-      keyword: keyword + '1'
-    },
-    {
-      id: 2,
-      title: '标题2',
-      content: '内容2',
-      createTime: new Date().getTime(),
-      author: author + '2',
-      keyword: keyword + '2'
-    }
-  ]
+export const getBlogList = async (author: string, keyword: string): Promise<Array<blog>> => {
+  let sql = `select * from blogs where 1=1 `
+  if (author) {
+    sql += `and author='${author}' `
+  }
+  if (keyword) {
+    sql += `and title like '%${keyword}%' `
+    sql += `or content like '%${keyword}%' `
+  }
+  sql += `order by createtime desc`
+  return exec(sql) as Promise<Array<blog>>;
 }
+
 
 export const getBolgDetail = (id: number): Promise<blog> => {
   console.log('id :>> ', id);

@@ -5,14 +5,16 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --ext js,ts --exec 'npx ts-node bin/www.ts Node_ENV=dev'",
-    "prod": "nodemon --ext js,ts --exec 'npx ts-node bin/www.ts Node_ENV=prod'"
+    "dev": "NODE_ENV=dev nodemon --ext js,ts --exec 'npx ts-node bin/www.ts'",
+    "prod": "NODE_ENV=prod nodemon --ext js,ts --exec 'npx ts-node bin/www.ts'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/mysql": "^2.15.19",
     "@types/node": "^16.9.6",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.13",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",

@@ -20,28 +20,20 @@ export const getBlogList = async (author: string, keyword: string): Promise<Arra
   return exec(sql) as Promise<Array<blog>>;
 }
 
-
-export const getBolgDetail = (id: number): Promise<blog> => {
-  console.log('id :>> ', id);
-  const blogDetail = {
-    id: 1,
-    title: '标题1',
-    content: '内容1',
-    createTime: new Date().getTime(),
-    author: '1',
-    keyword: '1'
-  }
-  return new Promise((resolve) => {
-    resolve(blogDetail)
-  })
+export const getBolgDetail = async (id: number): Promise<blog> => {
+  const sql = `select * from blogs where id='${id}'`;
+  const rows = await exec(sql) as Array<blog>;
+  return rows[0];
 }
 
-export const newBlog = (blogData: blog = {}): Promise<any> => {
-  console.log('newBlog :>> ', blogData);
-  // blogData是一个播客对象，包含tilte content
-  return new Promise((resolve) => {
-    resolve(3) // 表示新建播客的id
-  })
+export const newBlog = async (blog: blog = {}): Promise<{ id: number }> => {
+  const sql = `insert into blogs (title, content, createtime, author) values ('${blog.title}', '${blog.content}', ${blog.createTime}, '${blog.author}');`
+  try {
+    const row = await exec(sql) as { insertId: number };
+    return { id: row.insertId };
+  } catch (e) {
+    return { id: e };
+  }
 }
 
 // 更新

@@ -16,20 +16,27 @@ const handleBlogRouter = async (req: CustomIncomingMessage, res: ServerResponse)
     } catch (error) {
       return new ErrorModel(error)
     }
-
   }
 
   // 播客详情接口
   if (req.isGet && req.path === '/api/blog/detail') {
     const id = req.query.id;
-    const data = await getBolgDetail(id);
-    return new SuccessModel(data)
+    try {
+      const data = await getBolgDetail(id);
+      return new SuccessModel(data)
+    } catch (error) {
+      return new ErrorModel(error)
+    }
   }
 
   // 播客新增
   if (req.isPost && req.path === '/api/blog/new') {
-    const data = await newBlog(req.body);
-    return new SuccessModel(data)
+    try {
+      const data = await newBlog(req.body);
+      return new SuccessModel(data)
+    } catch (error) {
+      return new ErrorModel(error)
+    }
   }
 
   // 播客更新

@@ -1,10 +1,10 @@
-export const login = (username: string, password: string): Promise<any> => {
-  if (username === '王冬' && password === '123') {
-    return new Promise((resolve) => {
-      resolve(true)
-    })
-  }
-  return new Promise((resolve) => {
-    resolve(false)
+import { blog } from './../types/blog';
+import exec from '../db/mysql';
+import { user } from '../types/user';
+
+export const loginCheck = (username: string, password: string): Promise<user> => {
+  const sql = `select username, realname from users where username='${username}' and password='${password}'`
+  return exec(sql).then((rows: Array<user>) => {
+    return rows[0] || {}
   })
 }

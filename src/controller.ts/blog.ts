@@ -1,14 +1,15 @@
+import { OkPacket } from 'mysql';
 import exec from '../db/mysql';
 import { blog } from './../types/blog';
 
-/**
- * @description 播客列表的测试数据
- * @param author 
- * @param keyword 
- * @returns 
- */
-export const getBlogList = async (author: string, keyword: string): Promise<Array<blog>> => {
+export const getBlogList = async (id: number, author: string, keyword: string): Promise<Array<blog>> => {
   let sql = `select * from blogs where 1=1 `
+  if (id) {
+    sql += `and id='${id}' `
+    sql += `order by createtime desc`
+    return exec(sql) as Promise<Array<blog>>;
+  }
+
   if (author) {
     sql += `and author='${author}' `
   }
@@ -26,10 +27,10 @@ export const getBolgDetail = async (id: number): Promise<blog> => {
   return rows[0];
 }
 
-export const newBlog = async (blog: blog = {}): Promise<{ id: number }> => {
+export const newBlog = async (blog: blog = {}): Promise<blog> => {
   const sql = `insert into blogs (title, content, createtime, author) values ('${blog.title}', '${blog.content}', ${blog.createTime}, '${blog.author}');`
   try {
-    const row = await exec(sql) as { insertId: number };
+    const row = await exec(sql) as OkPacket;
     return { id: row.insertId };
   } catch (e) {
     return { id: e };
@@ -37,17 +38,26 @@ export const newBlog = async (blog: blog = {}): Promise<{ id: number }> => {
 }
 
 // 更新
-export const updateBlog = (id: number, blogData: blog = {}): Promise<any> => {
-  console.log('id :>> ', id);
-  console.log('updateBlog :>> ', id, blogData);
-  return new Promise((resolve) => {
-    resolve(true)
-  })
+export const updateBlog = async (id: number, blogData: blog = {}): Promise<Boolean> => {
+  const { title, content } = blogData
+  const sql = `update blogs set title='${title}', content='${content}' where id=${id}`
+
+  try {
+    const updateData = await exec(sql) as OkPacket;
+    if (updateData.affectedRows > 0) return true;
+    return false;
+  } catch (error) {
+    return error
+  }
 }
 
-export const delBlog = (id: number): Promise<any> => {
-  console.log('id :>> ', id);
-  return new Promise((resolve) => {
-    resolve(true)
-  })
+export const delBlog = async (id: number, author: string): Promise<Boolean> => {
+  const sql = `delete from blogs where id='${id}' and author='${author}'`
+  try {
+    const deleteData = await exec(sql) as OkPacket;
+    if (deleteData.affectedRows > 0) return true;
+    return false;
+  } catch (error) {
+    return error;
+  }
 }

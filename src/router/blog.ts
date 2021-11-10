@@ -9,9 +9,10 @@ const handleBlogRouter = async (req: CustomIncomingMessage, res: ServerResponse)
   // 播客列表接口
   if (req.isGet && req.path === '/api/blog/list') {
     const author = req.query.author;
+    const id = req.query.id;
     const keyword = req.query.keyword;
     try {
-      const listData = await getBlogList(author, keyword)
+      const listData = await getBlogList(id, author, keyword)
       return new SuccessModel(listData);
     } catch (error) {
       return new ErrorModel(error)
@@ -43,22 +44,27 @@ const handleBlogRouter = async (req: CustomIncomingMessage, res: ServerResponse)
   if (req.isPost && req.path === '/api/blog/update') {
     const id = req.query.id;
     const blogData = req.body;
-    const data = await updateBlog(id, blogData);
-    if (data) {
-      return new SuccessModel(data)
+    try {
+      const data = await updateBlog(id, blogData);
+      if (data) return new SuccessModel(data)
+      return new ErrorModel('更新播客失败')
+    } catch (error) {
+      return new ErrorModel(error)
     }
-    return new ErrorModel('更新播客失败')
   }
 
   // 播客删除
   if (req.isPost && req.path === '/api/blog/del') {
-    // return new SuccessModel(req.body)
     const id = req.query.id;
-    const data = await delBlog(id);
-    if (data) {
-      return new SuccessModel('删除成功' + id)
+    const author = req.body.author
+    try {
+      const data = await delBlog(id, author);
+      if (data) return new SuccessModel('删除成功' + id)
+      return new ErrorModel('删除失败')
+    } catch (error) {
+      return new ErrorModel('删除失败')
     }
-    return new ErrorModel('删除失败')
+
   }
 
 }

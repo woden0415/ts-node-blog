@@ -2,7 +2,8 @@ import { IncomingMessage } from "http";
 
 // 扩展 IncomingMessage
 export interface CustomIncomingMessage extends IncomingMessage {
-  [key: string]: any
+  [key: string]: any,
+  cookie: any
 }
 
 /**

@@ -1,8 +1,9 @@
-import { mysqld } from "../types/mysqld";
+import { IRedis, mysqld } from "../types/mysqld";
 
 const env = process.env.NODE_ENV
 
 let MYSQL_CONF: mysqld
+let REDIS_CONF: IRedis
 
 if (env === 'dev') {
   MYSQL_CONF = {
@@ -11,6 +12,10 @@ if (env === 'dev') {
     password: 'root',
     port: 3306,
     database: 'myblog'
+  }
+  REDIS_CONF = {
+    host: 'localhost',
+    port: 6379
   }
 }
 
@@ -25,5 +30,6 @@ if (env === 'production') {
 }
 
 export {
-  MYSQL_CONF
+  MYSQL_CONF,
+  REDIS_CONF
 };

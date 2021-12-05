@@ -3,6 +3,9 @@ import * as querystring from 'querystring';
 import { handleBlogRouter } from "./src/router/blog";
 import { handleUserRouter } from "./src/router/user";
 import { CustomIncomingMessage } from "./src/types";
+import { getCookieExpires } from "./src/util";
+
+const SESSION_DATA: any = {}
 
 const getPostData = (req: CustomIncomingMessage) => {
   return new Promise((resolve, reject) => {
@@ -39,6 +42,30 @@ const serverHandle = async (req: CustomIncomingMessage, res: ServerResponse) => 
 
   req.query = querystring.parse(url.split('?')[1]);
 
+  // 解析cookie
+  req.cookie = {};
+  const cookieStr = req.headers.cookie || ''; // k1=v1;k2=k2
+  cookieStr.split(';').forEach((item) => {
+    if (!item) return;
+    const arr = item.split('=');
+    const key = arr[0].trim()
+    const val = arr[1].trim()
+    req.cookie[key] = val
+  })
+
+  // 解析session 
+  let needSetSession = false // 
+  let userId = req.cookie.userid;
+  if (userId) {
+    if (!SESSION_DATA[userId]) {
+      SESSION_DATA[userId] = {}
+    }
+  } else {
+    needSetSession = true
+    userId = `${Date.now()}_${Math.random()}`
+    SESSION_DATA[userId] = {}
+  }
+  req.session = SESSION_DATA[userId]
   try {
     const postData = await getPostData(req)
     req.body = postData
@@ -46,6 +73,9 @@ const serverHandle = async (req: CustomIncomingMessage, res: ServerResponse) => 
     try {
       const blogData = await handleBlogRouter(req, res)
       if (blogData) {
+        if (needSetSession) {
+          res.setHeader('Set-Cookie', `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+        }
         res.end(JSON.stringify(blogData))
         return
       }

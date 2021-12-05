@@ -5,3 +5,8 @@ export interface mysqld {
   port: number,
   database: string
 }
+
+export interface IRedis {
+  host: string,
+  port: number
+}
